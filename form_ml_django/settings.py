@@ -1,5 +1,8 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -86,7 +89,7 @@ USE_L10N = True
 USE_TZ = True
 
 # settings.py
-EXCHANGE_RATE_API_KEY = 'f2e3944a450757659cf4fa03'
+EXCHANGE_RATE_API_KEY = os.getenv("API_KEY")
 
 
 
