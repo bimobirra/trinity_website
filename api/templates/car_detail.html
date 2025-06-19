@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Car Detail</title>
+    <!-- Import Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7"
+      crossorigin="anonymous"
+    />
+    <!-- Import Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Genos:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    </head>
+    <body>
+    <!-- Navbar -->
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg text-white bg-dark py-4">
+      <div class="container">
+        <a class="navbar-brand text-white fs-1" href="{% url 'form' %}"
+          ><b>TRINITY.</b></a
+        >
+        <button
+          class="navbar-toggler text-white"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarText"
+          aria-controls="navbarText"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon text-white"></span>
+        </button>
+        <div class="collapse navbar-collapse text-white" id="navbarText">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item mx-4">
+              <a
+                class="nav-link text-light fs-4 fw-semibold"
+                href="{% url 'home' %}"
+                >Home</a
+              >
+            </li>
+            <li class="nav-item mx-4">
+              <a
+                class="nav-link text-light fs-4 fw-semibold"
+                href="{% url 'car' %}"
+                >Car</a
+              >
+            </li>
+            <li class="nav-item mx-4">
+              <a
+                class="nav-link text-light active fs-4 fw-semibold"
+                aria-current="page"
+                href="{% url 'form' %}"
+                >Predict</a
+              >
+            </li>
+            {% if user.is_authenticated %}
+              {% if 'admin' in user.groups.all|join:", " %}
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle fs-5 mx-3 text-light active fs-4 fw-semibold"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Hello, {{ request.user }}
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+                  <li><a class="dropdown-item" href="{% url 'wishlists' %}">Wishlist</a></li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'logoutUser' %}"
+                      >Logout</a
+                    >
+                  </li>
+                </ul>
+              </li>
+              {% else %}
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle fs-5 mx-3 text-light active fs-4 fw-semibold"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Hello, {{ request.user }}
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a></li>
+                  <li><a class="dropdown-item" href="{% url 'wishlists' %}">Wishlist</a></li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'logoutUser' %}"
+                      >Logout</a
+                    >
+                  </li>
+                </ul>
+              </li>
+              {% endif %}
+            {% else %}
+            <li class="nav-item mx-4">
+              <a
+                class="nav-link text-light fs-4 fw-semibold"
+                href="{% url 'login' %}"
+                >Login</a
+              >
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- Navbar -->
+
+        <!-- Product section-->
+        <section class="py-5 " style="height: 100vh;">
+            <div class="container px-4 px-lg-5 my-5 ">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <div class="col-md-6 "><img class="card-img-top mb-5 mb-md-0" src="{{ car.image.url }}" alt="{{ car.name }}" style="object-fit: cover;" /></div>
+                    <div class="col-md-6">
+                      <div class="d-flex  align-items-center">
+                        <h1 class="display-5 fw-bolder">{{ car.name }}</h1>
+                        {% if user.is_authenticated %}
+                        <form method="POST" action="{% url 'toggle_wishlist' car.id %}">
+                            {% csrf_token %}
+                            {% if is_in_wishlist %}
+                                <button type="submit" class="btn btn-danger mx-4">
+                                  <i class="bi bi-bookmark-fill"></i>
+                                </button>
+                            {% else %}
+                                <button type="submit" class="btn btn-outline-success mx-4">
+                                  <i class="bi bi-bookmark"></i>
+                                </button>
+                            {% endif %}
+                        </form>
+                        {% endif %}
+                      </div>
+                        <div class="fs-5 mb-5">
+                            <span>${{ car.price }}</span>
+                        </div>
+                        <p class="fs-5 font-weight-bold">Brand: {{ car.brand }}
+                            <br>
+                            Transmission: {{ car.transmission }}
+                            <br>
+                            Color: {{ car.color }}
+                            <br>
+                            Interior Color: {{ car.interiorColor }}
+                            <br>
+                            Body: {{ car.body }}
+                            <br>
+                            Trim: {{ car.trim }}
+                            <br>
+                            Model: {{ car.model }}
+                            <br>
+                            Condition: {{ car.condition }}
+                            <br>
+                            Odometer: {{ car.odometer }}
+                        </p>
+                        <div class="d-flex">
+                            <a href="{% url 'create_reservations' pk=car.id%}" class="btn btn-outline-dark flex-shrink-0">Reserve</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Footer-->
+        <footer class="py-5 bg-dark">
+            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Trinity 2025</p></div>
+        </footer>
+    <!-- Import Bootstrap -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+      crossorigin="anonymous"
+    ></script>
+</html>

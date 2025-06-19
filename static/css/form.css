@@ -1,0 +1,83 @@
+html{
+    overflow-x: hidden;
+  }
+  
+  body {
+    /* Import font */
+    font-family: "Genos", sans-serif;
+  }
+  
+  /* Gambar di posisi yang tepat */
+  img {
+    width: 120rem;
+    height: 35vh;
+    object-fit: cover;
+    object-position: center center;
+  }
+
+    .background-image {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+    object-position: center;
+    z-index: 0;
+  }
+  
+  .img-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+  }
+  
+  /* Text di dalam gambar */
+  .overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 3rem;
+  font-weight: 600;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+  text-align: center;
+  max-width: 90vw;
+  width: 90vw;
+  padding: 0.5em 1em;
+  line-height: 1.1;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.2);
+  box-sizing: border-box;
+  word-break: break-word;
+}
+
+@media (max-width: 900px) {
+  .overlay {
+    font-size: 2rem;
+    padding: 0.5em;
+  }
+}
+
+@media (max-width: 600px) {
+  .overlay {
+    font-size: 1.2rem;
+    padding: 0.3em;
+  }
+}
+
+  
+  /* Mengkostumisasi Input */
+  .form-control {
+    background-color: #212529;
+    color: white;
+  }
+  
+  .form-control:focus {
+    background-color: #212529;
+    color: white;
+    border-color:white;
+  }
+  
+  .btn{
+    height: 50px;
+  }
+

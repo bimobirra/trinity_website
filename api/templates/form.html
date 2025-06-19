@@ -1,0 +1,366 @@
+{% load sweetify static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Predict</title>
+
+  <!-- Import Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous" />
+
+  <!-- Import Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Genos:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet" />
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+  <!-- Import CSS -->
+  <link rel="stylesheet" href="{% static 'css/form.css' %}" />
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+  {% sweetify %}
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg text-white bg-dark py-4">
+          <div class="container">
+            <a class="navbar-brand text-white fs-1" href="{% url 'form' %}"
+              ><b>TRINITY.</b></a
+            >
+            <button
+              class="navbar-toggler text-white"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarText"
+              aria-controls="navbarText"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span class="navbar-toggler-icon text-white"></span>
+            </button>
+            <div class="collapse navbar-collapse text-white" id="navbarText">
+              <ul class="navbar-nav ms-auto">
+                <li class="nav-item mx-4">
+                  <a
+                    class="nav-link text-light fs-4 fw-semibold"
+                    href="{% url 'home' %}"
+                    >Home</a
+                  >
+                </li>
+                <li class="nav-item mx-4">
+                  <a
+                    class="nav-link text-light fs-4 fw-semibold"
+                    href="{% url 'car' %}"
+                    >Car</a
+                  >
+                </li>
+                <li class="nav-item mx-4">
+                  <a
+                    class="nav-link text-light active fs-4 fw-semibold"
+                    aria-current="page"
+                    href="{% url 'form' %}"
+                    >Predict</a
+                  >
+                </li>
+                {% if user.is_authenticated %}
+                  {% if 'admin' in user.groups.all|join:", " %}
+                  <li class="nav-item dropdown">
+                    <a
+                      class="nav-link dropdown-toggle fs-5 mx-3 text-light active fs-4 fw-semibold"
+                      href="#"
+                      role="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      Hello, {{ request.user }}
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+                      <li><a class="dropdown-item" href="{% url 'wishlists' %}">Wishlist</a></li>
+                      <li>
+                        <a class="dropdown-item" href="{% url 'logoutUser' %}"
+                          >Logout</a
+                        >
+                      </li>
+                    </ul>
+                  </li>
+                  {% else %}
+                  <li class="nav-item dropdown">
+                    <a
+                      class="nav-link dropdown-toggle fs-5 mx-3 text-light active fs-4 fw-semibold"
+                      href="#"
+                      role="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      Hello, {{ request.user }}
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a></li>
+                      <li><a class="dropdown-item" href="{% url 'wishlists' %}">Wishlist</a></li>
+                      <li>
+                        <a class="dropdown-item" href="{% url 'logoutUser' %}"
+                          >Logout</a
+                        >
+                      </li>
+                    </ul>
+                  </li>
+                  {% endif %}
+                {% else %}
+                <li class="nav-item mx-4">
+                  <a
+                    class="nav-link text-light fs-4 fw-semibold"
+                    href="{% url 'login' %}"
+                    >Login</a
+                  >
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </nav>
+        <!-- Navbar -->
+
+  <!-- Header -->
+  <div class="img-container">
+    <img src="{% static 'images/car_background_predict.png' %}" alt="car_background" class="background-image"
+      style="filter: brightness(45%)" />
+    <p class="overlay">Predict The Car's Price</p>
+  </div>
+  <!-- Header -->
+
+  <!-- Form Section -->
+  <div class="bg-dark h-100 w-100 d-flex flex-row">
+    <!-- Left side -->
+    <div class="w-50 my-5 d-flex justify-content-center align-items-center">
+      <div class="d-flex flex-column justify-content-center align-items-start border border-1 border-secondary w-75"
+        style="border-radius: 13px">
+        <p class="text-light my-3 fs-4 mx-5">
+          Enter car's details to get an estimated price using our machine
+          learning model
+        </p>
+
+        <form action="" id="predict" class="w-50 mx-5">
+          <div class="form-floating mb-3">
+  <select class="form-select form-control" id="Brand" required>
+    <option selected hidden value="">Select Brand</option>
+    <!-- Brand options will be populated by JavaScript -->
+  </select>
+  <label class="text-white" for="Brand">Brand</label>
+</div>
+
+<div class="form-floating mb-3">
+  <select class="form-select form-control" id="Year" required>
+    <option selected hidden>Select Year</option>
+    <!-- Tahun akan diisi oleh JavaScript -->
+  </select>
+  <label class="text-white" for="Year">Year</label>
+</div>
+          <div class="form-floating mb-3">
+            <select class="form-select, form-control" id="Transmission" aria-label="Transmission" required>
+              <option selected hidden>Select Transmission</option>
+              <option value="Matic">Automatic</option>
+              <option value="Manual">Manual</option>
+            </select>
+            <label class="text-white" for="Transmission">Transmission</label>
+          </div>
+          <div class="form-floating mb-3">
+            <select class="form-select form-control" id="Model" required>
+              <option selected hidden value="">Select Model</option>
+              <!-- Model options will be populated by JavaScript -->
+            </select>
+            <label class="text-white" for="Model">Model</label>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="Trim" placeholder="Trim*" required data-bs-toggle="tooltip"
+              data-bs-placement="Right" title="The car variant/type that defines features, such as G, RS, or Veloz." />
+            <label class="text-white" for="Trim">Trim</label>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="Body" placeholder="Body*" required data-bs-toggle="tooltip"
+              data-bs-placement="Right" title="The car body shape, such as Sedan, SUV, Hatchback, or Coupe." />
+            <label class="text-white" for="Body">Body</label>
+          </div>
+
+          <div class="form-floating mb-3">
+            <select class="form-select, form-control" id="Condition" aria-label="Condition" required>
+              <option selected hidden>Select Condition</option>
+              <option value="0.2">Very Bad</option>
+              <option value="0.4">Bad</option>
+              <option value="0.6">Average</option>
+              <option value="0.8">Good</option>
+              <option value="1">Very Good</option>
+            </select>
+            <label class="text-white" for="Condition">Condition</label>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="Odometer" placeholder="Odometer*" required
+              data-bs-toggle="tooltip" data-bs-placement="Right"
+              title="Total distance the car has traveled in kilometers, e.g., 35,000 km." />
+            <label class="text-white" for="Odometer">Odometer</label>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="Interiorcolor" placeholder="Interiorcolor*" required
+              data-bs-toggle="tooltip" data-bs-placement="Right"
+              title="The interior color of the car, such as Black, Beige, or Brown." />
+            <label class="text-white" for="Interiorcolor">Interior Color</label>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="Color" placeholder="Color*" required data-bs-toggle="tooltip"
+              data-bs-placement="Right" title="The exterior paint color of the car, e.g., White, Red, Gray, or Blue." />
+            <label class="text-white" for="Color">Color</label>
+          </div>
+
+          <button type="submit" class="mb-3 w-100 btn btn-outline-secondary text-white">
+            Predict
+          </button>
+        </form>
+      </div>
+    </div>
+    <!-- Left side -->
+
+    <!-- Right side -->
+    <div class="w-50 my-5 d-flex justify-content-center align-items-center">
+      <div class="d-flex flex-column justify-content-center align-items-start border border-1 border-secondary w-75"
+        style="border-radius: 13px">
+        <p class="text-light my-3 fs-1 mx-5">Estimated Price:</p>
+        <p class="text-light my-3 fs-5 mx-5 my-2" id="result">$ 0</p>
+      </div>
+    </div>
+    <!-- Right side -->
+  </div>
+  <!-- Form Section -->
+
+  <!-- Import Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+    crossorigin="anonymous"></script>
+
+  <script src="{% static 'javascript/script.js' %}"></script>
+
+  <script>
+    // Brand and Model mapping
+    const brandModelData = {
+      "Acura": ["CL", "ILX", "MDX", "RDX", "RSX", "TL", "TSX", "ZDX"],
+      "Audi": ["A3", "A4", "A5", "A6", "Q5", "Q7", "RS 4", "S4", "S5", "allroad"],
+      "BMW": ["1 Series", "3 Series", "3 Series Gran Turismo", "5 Series", "5 Series Gran Turismo", "6 Series", "7 Series", "M3", "M5", "M6", "X1", "X3", "X5", "X6", "Z3", "Z4"],
+      "Buick": ["Century", "Enclave", "Encore", "LaCrosse", "LeSabre", "Lucerne", "Regal", "Rendezvous", "Verano"],
+      "Cadillac": ["ATS", "CTS", "CTS Coupe", "DTS", "DeVille", "Escalade", "Escalade ESV", "SRX", "Seville", "XTS", "srx"],
+      "Chevrolet": ["Avalanche", "Aveo", "Blazer", "C/K 1500 Series", "Camaro", "Captiva Sport", "Cavalier", "Cobalt", "Colorado", "Corvette", "Cruze", "Equinox", "Express", "Express Cargo", "HHR", "Impala", "Impala Limited", "Lumina", "Malibu", "Malibu Hybrid", "Monte Carlo", "S-10", "Silverado 1500", "Silverado 1500 Classic", "Silverado 1500HD", "Silverado 2500HD", "Silverado 3500", "Sonic", "Spark", "Suburban", "Tahoe", "Tracker", "TrailBlazer", "TrailBlazer EXT", "Traverse", "Uplander", "Venture", "Volt", "1500", "corvette", "malibu", "uplander"],
+      "Chrysler": ["200", "300", "Aspen", "Concorde", "Crossfire", "PT Cruiser", "Pacifica", "Sebring", "Town and Country", "pacifica"],
+      "Dodge": ["Avenger", "Caliber", "Caravan", "Challenger", "Charger", "Dakota", "Dart", "Durango", "Grand Caravan", "Intrepid", "Journey", "Magnum", "Neon", "Nitro", "Ram Pickup 1500", "Ram Pickup 2500", "Ram Pickup 3500", "Sprinter Cargo", "Stratus", "dakota", "grand", "journey"],
+      "FIAT": ["500"],
+      "Ford": ["C-Max Energi", "C-Max Hybrid", "Crown Victoria", "E-Series Van", "E-Series Wagon", "Econoline Cargo", "Econoline Wagon", "Edge", "Escape", "Escort", "Excursion", "Expedition", "Explorer", "Explorer Sport", "Explorer Sport Trac", "F-150", "F-250 Super Duty", "F-350 Super Duty", "F-450 Super Duty", "Fiesta", "Flex", "Focus", "Freestar", "Freestyle", "Fusion", "Fusion Hybrid", "Mustang", "Ranger", "Shelby GT500", "Taurus", "Taurus X", "Transit Connect", "Transit Van", "Windstar", "e350", "explorer", "f150"],
+      "GMC": ["Acadia", "Canyon", "Envoy", "Envoy XL", "Savana Cargo", "Sierra 1500", "Sierra 2500HD", "Terrain", "Yukon", "Yukon Hybrid", "Yukon XL"],
+      "HUMMER": ["H2", "H3"],
+      "Honda": ["Accord", "Accord Crosstour", "CR-V", "CR-Z", "Civic", "Crosstour", "Element", "Fit", "Insight", "Odyssey", "Pilot", "accord"],
+      "Hyundai": ["Accent", "Azera", "Elantra", "Elantra Coupe", "Elantra GT", "Elantra Touring", "Genesis", "Genesis Coupe", "Santa Fe", "Santa Fe Sport", "Sonata", "Sonata Hybrid", "Tiburon", "Tucson", "Veloster", "Veracruz", "XG300"],
+      "Infiniti": ["EX", "FX", "FX35", "G Convertible", "G Coupe", "G Sedan", "G20", "G35", "G37", "I30", "I35", "JX", "M", "M35", "M37", "M45", "Q50", "QX56", "QX60"],
+      "Isuzu": ["Rodeo"],
+      "Jaguar": ["S-Type", "X-Type", "XF", "XJ-Series", "XK-Series"],
+      "Jeep": ["Cherokee", "Commander", "Compass", "Grand Cherokee", "Liberty", "Patriot", "Wrangler", "wrangler"],
+      "Kia": ["Amanti", "Borrego", "Cadenza", "Forte", "Optima", "Rio", "Rondo", "Sedona", "Sorento", "Soul", "Spectra", "Sportage"],
+      "Land Rover": ["LR4", "Range Rover", "Range Rover Sport", "range"],
+      "Lexus": ["CT 200h", "ES 300", "ES 300h", "ES 330", "ES 350", "GS 300", "GS 350", "GS 430", "GX 460", "IS 250", "IS 350", "IS 350 C", "LS 400", "LS 430", "RX 300", "RX 330", "RX 350", "RX 400h", "RX 450h", "SC 430"],
+      "Lincoln": ["Blackwood", "LS", "MKS", "MKT", "MKX", "MKZ", "Navigator", "Navigator L", "Town Car", "Zephyr"],
+      "MINI": ["Cooper", "Cooper Clubman", "Cooper Countryman", "Cooper Paceman", "Cooper Roadster"],
+      "Maserati": ["Quattroporte"],
+      "Mazda": ["6", "CX-5", "CX-7", "CX-9", "MX-5 Miata", "Mazda2", "Mazda3", "Mazda5", "Mazda6", "Mazdaspeed Mazda3", "Millenia", "Protege", "Tribute"],
+      "Mercedes-Benz": ["C-Class", "CLK-Class", "CLS-Class", "E-Class", "GL-Class", "GLK-Class", "M-Class", "S-Class", "SL-Class", "SLK-Class", "c230wz"],
+      "Mercury": ["Cougar", "Grand Marquis", "Mariner", "Milan", "Monterey", "Mountaineer", "Sable", "grand"],
+      "Mitsubishi": ["Eclipse", "Eclipse Spyder", "Endeavor", "Galant", "Lancer", "Mirage", "Montero", "Outlander", "Outlander Sport", "endeavor", "galant"],
+      "Nissan": ["350Z", "370Z", "Altima", "Altima Hybrid", "Armada", "Cube", "Frontier", "Juke", "Leaf", "Maxima", "Murano", "Murano CrossCabriolet", "NV Cargo", "Pathfinder", "Quest", "Rogue", "Sentra", "Titan", "Versa", "Versa Note", "Xterra", "350z"],
+      "Oldsmobile": ["Alero", "Bravada"],
+      "Pontiac": ["Firebird", "G5", "G6", "Grand Am", "Grand Prix", "Solstice", "Sunfire", "Torrent", "Vibe"],
+      "Porsche": ["911", "Boxster", "Cayenne"],
+      "Ram": ["1500", "2500", "3500", "C/V Tradesman"],
+      "Saturn": ["Aura", "ION", "L-Series", "Outlook", "Sky"],
+      "Scion": ["FR-S", "tC", "xB", "xD"],
+      "Subaru": ["B9 Tribeca", "Forester", "Impreza", "Impreza WRX", "Legacy", "Outback", "Tribeca", "XV Crosstrek"],
+      "Suzuki": ["Grand Vitara", "Kizashi", "Reno", "SX4", "XL-7", "XL7"],
+      "Toyota": ["4Runner", "Avalon", "Camry", "Camry Hybrid", "Camry Solara", "Corolla", "ECHO", "FJ Cruiser", "Highlander", "Highlander Hybrid", "Land Cruiser", "MR2 Spyder", "Matrix", "Prius", "Prius c", "RAV4", "Sequoia", "Sienna", "Tacoma", "Tundra", "Venza", "Yaris", "tundra", "yaris"],
+      "Volkswagen": ["Beetle", "Beetle Convertible", "CC", "Cabrio", "Eos", "GTI", "Golf", "Jetta", "Jetta SportWagen", "New Beetle", "Passat", "Routan", "Tiguan", "Touareg"],
+      "Volvo": ["C70", "S40", "S60", "S80", "V40", "V50", "V60", "V70", "XC", "XC60", "XC70", "XC90"],
+    };
+
+    // Populate Brand dropdown
+    const brandSelect = document.getElementById('Brand');
+    const modelSelect = document.getElementById('Model');
+
+    Object.keys(brandModelData).sort().forEach(brand => {
+      const option = document.createElement('option');
+      option.value = brand;
+      option.text = brand;
+      brandSelect.appendChild(option);
+    });
+
+    // Handle Brand change
+    brandSelect.addEventListener('change', function() {
+      const selectedBrand = this.value;
+      modelSelect.innerHTML = '<option selected hidden value="">Select Model</option>';
+      if (selectedBrand && brandModelData[selectedBrand]) {
+        brandModelData[selectedBrand].forEach(model => {
+          const option = document.createElement('option');
+          option.value = model;
+          option.text = model;
+          modelSelect.appendChild(option);
+        });
+      }
+    });
+
+    // Tooltip initialization and Year population (existing code)
+    document.addEventListener("DOMContentLoaded", function () {
+      var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+      var tooltipList = [...tooltipTriggerList].map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+
+      // Populate Year dropdown (example: 2000-2025)
+      const yearSelect = document.getElementById('Year');
+      for (let y = 2015; y >= 1990; y--) {
+        const option = document.createElement('option');
+        option.value = y;
+        option.text = y;
+        yearSelect.appendChild(option);
+      }
+    });
+  </script>
+
+  <script>
+    fetch('/get_options/')
+      .then(response => response.json())
+      .then(data => {
+        if (data.models && data.years) {
+          const modelSelect = document.getElementById('Model');
+          const yearSelect = document.getElementById('Year');
+
+          data.years.forEach(year => {
+            const option = document.createElement('option');
+            option.value = year;
+            option.text = year;
+            yearSelect.appendChild(option);
+          });
+        } else {
+          alert('Gagal memuat data: ' + (data.error || 'Unknown error'));
+        }
+      })
+      .catch(error => {
+        console.error('Error mengambil data:', error);
+      });
+
+  </script>
+
+</body>
+
+</html>

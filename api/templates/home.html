@@ -1,0 +1,225 @@
+{% load sweetify static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solusi Bisnis Anda</title>
+
+    <!-- Import Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7"
+      crossorigin="anonymous"
+    />
+    <!-- Import Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Genos:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Import CSS -->
+    <link rel="stylesheet" href="{% static 'css/home.css' %}" />
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </head>
+  <body class="bg-dark">
+    {% sweetify %}
+            <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg text-white bg-dark py-4">
+      <div class="container">
+        <a class="navbar-brand text-white fs-1" href="{% url 'form' %}"
+          ><b>TRINITY.</b></a
+        >
+        <button
+          class="navbar-toggler text-white"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarText"
+          aria-controls="navbarText"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon text-white"></span>
+        </button>
+        <div class="collapse navbar-collapse text-white" id="navbarText">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item mx-4">
+              <a
+                class="nav-link text-light fs-4 fw-semibold"
+                href="{% url 'home' %}"
+                >Home</a
+              >
+            </li>
+            <li class="nav-item mx-4">
+              <a
+                class="nav-link text-light fs-4 fw-semibold"
+                href="{% url 'car' %}"
+                >Car</a
+              >
+            </li>
+            <li class="nav-item mx-4">
+              <a
+                class="nav-link text-light active fs-4 fw-semibold"
+                aria-current="page"
+                href="{% url 'form' %}"
+                >Predict</a
+              >
+            </li>
+            {% if user.is_authenticated %}
+              {% if 'admin' in user.groups.all|join:", " %}
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle fs-5 mx-3 text-light active fs-4 fw-semibold"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Hello, {{ request.user }}
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+                  <li><a class="dropdown-item" href="{% url 'wishlists' %}">Wishlist</a></li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'logoutUser' %}"
+                      >Logout</a
+                    >
+                  </li>
+                </ul>
+              </li>
+              {% else %}
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle fs-5 mx-3 text-light active fs-4 fw-semibold"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Hello, {{ request.user }}
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a></li>
+                  <li><a class="dropdown-item" href="{% url 'wishlists' %}">Wishlist</a></li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'logoutUser' %}"
+                      >Logout</a
+                    >
+                  </li>
+                </ul>
+              </li>
+              {% endif %}
+            {% else %}
+            <li class="nav-item mx-4">
+              <a
+                class="nav-link text-light fs-4 fw-semibold"
+                href="{% url 'login' %}"
+                >Login</a
+              >
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- Navbar -->
+
+    <!-- Hero -->
+    <div class="image-container">
+      <img
+        src="{% static 'images/home_background.png' %}"
+        alt="Home Background"
+        class="background-image"
+        style="filter: brightness(65%) blur(1px)"
+      />
+      <div class="left-filter"></div>
+
+      <div class="overlay">
+        <p class="text-white fs-1">We've got your problem covered with</p>
+        <h1 class="text-white">Predict Car’s Price Instantly!</h1>
+        <p class="text-white fs-1">
+          Harness the power of Machine Learning to estimate car's value in
+          seconds.
+        </p>
+        <a
+          href="{% url 'form' %}"
+          class="btn btn-outline-secondary fs-2 text-white"
+          >Predict Now</a
+        >
+      </div>
+    </div>
+    <!-- Hero -->
+
+    <!-- About Us -->
+
+    <div class="d-flex" style="height: 100vh">
+      <div class="w-50 d-flex">
+        <div class="mt-5 d-flex justify-content-start align-items-center h-100">
+          <img
+            id="aboutUs1"
+            src="{% static 'images/about_us_2.jpg' %}"
+            alt=""
+            style="
+              width: 20rem;
+              height: 47rem;
+              object-fit: cover;
+              filter: brightness(0.5);
+            "
+          />
+        </div>
+        <div class="mt-5 d-flex flex-column justify-content-center h-100">
+          <img
+            src="{% static 'images/about_us_1.png' %}"
+            style="
+              width: 20rem;
+              height: 18rem;
+              object-fit: cover;
+              filter: brightness(0.5);
+            "
+            class="align-self-start mx-3"
+            alt=""
+          />
+          <img
+            src="{% static 'images/about_us_3.png' %}"
+            style="
+              width: 20rem;
+              height: 28.3rem;
+              object-fit: cover;
+              filter: brightness(0.5);
+            "
+            class="align-self-start mx-3 my-3"
+            alt=""
+          />
+        </div>
+      </div>
+      <div class="d-flex flex-column justify-content-center align-items-center" style="margin-left: 4rem;">
+        <p class="text-white display-2 align-self-start">About us</p>
+        <p class="text-white display-5">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione
+          cupiditate, dignissimos deleniti vel beatae perferendis id itaque eum!
+          Praesentium dolore reiciendis magnam quos repellendus commodi nam
+          velit est quia amet?
+        </p>
+      </div>
+    </div>
+    <!-- About Us -->
+
+    <!-- Footer -->
+     <hr class="text-secondary">
+    <footer>
+      <p class="text-white text-center">Copyright &copy; Trinity 2025</p>
+    </footer>
+    <!-- Footer -->
+
+    <!-- Import Bootstrap -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
