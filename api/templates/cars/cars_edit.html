@@ -32,6 +32,11 @@
             </div>
 
             <div class="mb-3">
+              <label for="id_transmission" class="form-label">Transmission</label>
+              {{ form.transmission|add_class:"form-control" }}
+          </div>
+
+            <div class="mb-3">
                 <label for="id_color" class="form-label">Color</label>
                 {{ form.color|add_class:"form-control" }}
             </div>
@@ -76,32 +81,36 @@
                 {{ form.image|add_class:"form-control" }}
             </div>
 
-            <button type="submit" class="btn btn-success">Save</button>
+            <button id="update-confirm-btn" type="button" class="btn btn-success update-confirm-btn">Save</button>
             <a href="{% url 'cars_view' %}" class="btn btn-secondary">Cancel</a>
           </form>
         </div>
       </div>
     </div>
 
-    <script>
-      document
-        .getElementById("update-confirm-btn")
-        .addEventListener("click", function () {
-          Swal.fire({
-            title: "Confirmation?",
-            text: "Are you sure you want to update this book?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes!",
-            cancelButtonText: "Cancel",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              document.getElementById("update-form").submit();
-            }
+    <script>   
+      document.addEventListener('DOMContentLoaded', function () {
+          document.querySelectorAll('.update-confirm-btn').forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                  Swal.fire({
+                      title: 'Confirmation?',
+                      text: "Are you sure you want to update?",
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Yes!',
+                      cancelButtonText: 'Cancel'
+                  }).then((result) => {
+                      if (result.isConfirmed) {
+                          const form = btn.closest('form');
+                          if (form) form.submit();
+                      }
+                  });
+              });
           });
-        });
-    </script>
+      });
+      
+      </script>
   </body>
 </html>
